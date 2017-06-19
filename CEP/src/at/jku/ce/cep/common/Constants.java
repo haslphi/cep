@@ -1,0 +1,12 @@
+package at.jku.ce.cep.common;
+
+public class Constants {
+
+	// Generated Key (CryptoService::main)
+	public static final String CRYPTO_KEY = "91E1A843C95DACE4AC5C5EA9F6AEA51E";
+	public static final String DEFAULT_PERSISTENCE_IDENTIFIER = "cep";
+	public static final Long MAX_HISTORY = Long.MAX_VALUE;
+	public static final String VALO_BLUE = "#1772d7";
+	public static final int CANVAS_WIDTH = 800;
+	public static final int CANVAS_HEIGHT = 600;
+}
