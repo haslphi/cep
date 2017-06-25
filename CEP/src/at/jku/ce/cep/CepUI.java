@@ -2,29 +2,28 @@ package at.jku.ce.cep;
 
 import javax.servlet.annotation.WebServlet;
 
+import org.eclipse.viatra.cep.core.api.engine.CEPEngine;
+import org.eclipse.viatra.cep.core.metamodels.automaton.EventContext;
+
 import com.google.common.eventbus.EventBus;
 import com.google.common.eventbus.Subscribe;
 import com.vaadin.annotations.Theme;
 import com.vaadin.annotations.Title;
 import com.vaadin.annotations.VaadinServletConfiguration;
 import com.vaadin.server.Page;
+import com.vaadin.server.Page.BrowserWindowResizeEvent;
+import com.vaadin.server.Page.BrowserWindowResizeListener;
 import com.vaadin.server.VaadinRequest;
 import com.vaadin.server.VaadinServlet;
 import com.vaadin.server.VaadinSession;
-import com.vaadin.server.Page.BrowserWindowResizeEvent;
-import com.vaadin.server.Page.BrowserWindowResizeListener;
-import com.vaadin.ui.Button;
-import com.vaadin.ui.Button.ClickEvent;
+import com.vaadin.ui.UI;
 
-import at.jku.ce.cep.ui.ApplicationController;
-import at.jku.ce.cep.ui.login.LoginController;
 import at.jku.ce.cep.beans.User;
+import at.jku.ce.cep.engine.model.CepFactory;
+import at.jku.ce.cep.ui.ApplicationController;
 import at.jku.ce.cep.ui.events.LoginEvent;
 import at.jku.ce.cep.ui.events.LogoutEvent;
-
-import com.vaadin.ui.Label;
-import com.vaadin.ui.UI;
-import com.vaadin.ui.VerticalLayout;
+import at.jku.ce.cep.ui.login.LoginController;
 
 @SuppressWarnings("serial")
 @Theme("cep")
@@ -34,6 +33,7 @@ public class CepUI extends UI {
 	private LoginController loginController = null;
 	private ApplicationController applicationController = null;
 	private static EventBus eventBus = null;
+	private CEPEngine engine = null;
 
 	@WebServlet(value = "/*", asyncSupported = true)
 	@VaadinServletConfiguration(productionMode = false, ui = CepUI.class, widgetset = "at.jku.ce.cep.widgetset.CepWidgetset")
@@ -60,6 +60,9 @@ public class CepUI extends UI {
 		// register this class to the eventbus
 		eventBus = new EventBus();
 		eventBus.register(this);
+		
+		// initialize cep engine
+//		buildEngine();
 
 		switchBySession();
 //				
@@ -144,6 +147,11 @@ public class CepUI extends UI {
 		loginController.getView().getUsernameTextField().focus();
 
 		applicationController = null;
+	}
+	
+	private void buildEngine() {
+		engine = CEPEngine.newEngine().eventContext(EventContext.CHRONICLE).rules(CepFactory.getInstance().allRules())
+				.prepare();
 	}
 
 }
